@@ -7,7 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
-        body { font-family: 'Tajawal', sans-serif; background-color: #0f172a; color: #f8fafc; overflow: hidden; }
+        /* تم تغيير الخلفية إلى الفاتح (f8fafc) ولون النص الأساسي للداكن */
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; color: #0f172a; overflow: hidden; }
 
         .radar-pulse { animation: radar 2s infinite cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes radar { 0% { transform: scale(0.5); opacity: 0.8; } 100% { transform: scale(3.5); opacity: 0; } }
@@ -23,18 +24,18 @@
         <div class="absolute w-20 h-20 bg-emerald-400 rounded-full radar-pulse" style="animation-delay: 0.6s"></div>
         <div class="absolute w-20 h-20 bg-emerald-300 rounded-full radar-pulse" style="animation-delay: 1.2s"></div>
 
-        <div class="relative bg-slate-950 w-28 h-28 rounded-full flex items-center justify-center shadow-2xl border-4 border-slate-800 z-10 text-6xl shadow-emerald-500/20">
+        <div class="relative bg-white w-28 h-28 rounded-full flex items-center justify-center shadow-2xl border-4 border-slate-100 z-10 text-6xl shadow-emerald-500/20">
             🏥
         </div>
     </div>
 
     <div class="text-center px-12 select-none welcome-pulse">
-        <h1 class="text-5xl font-black text-white mb-6 tracking-tight leading-tight">
+        <h1 id="main-title" class="text-5xl font-black text-slate-800 mb-6 tracking-tight leading-tight transition-colors duration-500">
             أهلاً وسهلاً بكم في عيادتنا
         </h1>
-        <p class="text-slate-400 font-bold text-2xl tracking-wide max-w-3xl leading-relaxed">
+        <p id="sub-title" class="text-slate-500 font-bold text-2xl tracking-wide max-w-3xl leading-relaxed transition-colors duration-500">
             نتمنى لكم وقتاً مريحاً ودوام الصحة والعافية.<br>
-            <span class="text-slate-500 text-lg font-medium">(جاري تجهيز شاشة الدور...)</span>
+            <span class="text-slate-400 text-lg font-medium">(جاري تجهيز شاشة الدور...)</span>
         </p>
     </div>
 
@@ -59,6 +60,14 @@
                 clearTimeout(timeoutId);
                 if (!serverFound) {
                     serverFound = true;
+                    
+                    // لمسة جمالية: تغيير النص عند إيجاد السيرفر
+                    const title = document.getElementById('main-title');
+                    const subTitle = document.getElementById('sub-title');
+                    title.innerText = "تم الاتصال بنجاح!";
+                    title.classList.replace('text-slate-800', 'text-emerald-600');
+                    subTitle.innerHTML = "جاري عرض الشاشة الآن...";
+                    
                     setTimeout(() => { window.location.href = `${testUrl}/tv.html`; }, 800);
                 }
             } catch (error) {
@@ -78,8 +87,11 @@
             const scanPromises = allIPs.map(ip => checkIP(ip));
             await Promise.all(scanPromises);
 
+            // الخدعة السحرية: إعادة إنعاش الشبكة بالكامل كل 10 ثوانٍ بصمت
             if (!serverFound) {
-                setTimeout(scanNetwork, 10000);
+                setTimeout(() => {
+                    window.location.href = window.location.pathname + "?refresh=" + Date.now();
+                }, 10000);
             }
         }
 
